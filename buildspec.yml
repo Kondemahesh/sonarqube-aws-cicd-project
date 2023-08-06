@@ -1,10 +1,9 @@
 version: 0.2
 env:
   secrets-manager:
-    LOGIN: local/sonar:sonartoken
-    HOST: local/sonar:HOST
-    Organization: local/sonar:Organization
-    Project: local/sonar:Project
+    LOGIN: local/sonar1:sonartoken
+    HOST: local/sonar1:HOST
+    Project: local/sonar1:Project
 phases:
   install:
     commands:
@@ -25,9 +24,9 @@ phases:
   build:
     commands:
       - echo "Build phase ..."
-      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
+      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project 
       - sleep 5
-      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
+      - curl http://13.235.79.98:9000/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
       - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
   post_build:
